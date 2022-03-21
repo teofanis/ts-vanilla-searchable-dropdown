@@ -1,0 +1,23 @@
+{
+  "name": "searchable-dropdown",
+  "version": "1.0.0",
+  "description": "Searchable Dropdown",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/teofanis/npm-searchable.git"
+  },
+  "keywords": [
+    "searchable",
+    "dropdown"
+  ],
+  "author": "Teofanis Papadopulos",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/teofanis/npm-searchable/issues"
+  },
+  "homepage": "https://github.com/teofanis/npm-searchable#readme"
+}
