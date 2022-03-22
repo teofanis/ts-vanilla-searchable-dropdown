@@ -5,7 +5,7 @@ import {
   SearchableDropdownConfig,
 } from "./interfaces";
 
-class SearchableDropdown implements SearchableDropdownI {
+export class SearchableDropdown implements SearchableDropdownI {
   private _config: SearchableDropdownConfig;
   private _element: HTMLInputElement;
   constructor(
@@ -70,5 +70,3 @@ class SearchableDropdown implements SearchableDropdownI {
     this.element.placeholder = this.config.placeholder || "";
   }
 }
-
-export default SearchableDropdown;
