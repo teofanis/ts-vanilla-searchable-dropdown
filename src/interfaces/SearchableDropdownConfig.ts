@@ -1,4 +1,4 @@
 export interface SearchableDropdownConfig {
-  label?: string;
+  label?: string | null;
   placeholder?: string;
 }

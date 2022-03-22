@@ -1,2 +1,6 @@
 import SearchableDropdown from "./searchable-dropdown";
-export { SearchableDropdown as SearchableDropdown };
+
+export * from "./constants";
+export * from "./interfaces";
+
+export default SearchableDropdown;

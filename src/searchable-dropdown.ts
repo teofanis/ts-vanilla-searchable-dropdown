@@ -1,7 +1,9 @@
-import { DEFAULT_CONFIG } from "./constants/defaults";
-import { MountableElement } from "./interfaces/common";
-import { SearchableDropdown as SearchableDropdownI } from "./interfaces/SearchableDropdown";
-import { SearchableDropdownConfig } from "./interfaces/SearchableDropdownConfig";
+import { DEFAULT_CONFIG } from "./constants";
+import {
+  MountableElement,
+  SearchableDropdown as SearchableDropdownI,
+  SearchableDropdownConfig,
+} from "./interfaces";
 
 class SearchableDropdown implements SearchableDropdownI {
   private _config: SearchableDropdownConfig;
@@ -65,7 +67,7 @@ class SearchableDropdown implements SearchableDropdownI {
   // Internal functions
   _render(): void {
     console.log("Rendering Called");
-    this.element.placeholder = this.config.placeholder;
+    this.element.placeholder = this.config.placeholder || "";
   }
 }
 
