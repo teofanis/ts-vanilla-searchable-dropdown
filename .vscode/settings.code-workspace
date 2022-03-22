@@ -1,0 +1,27 @@
+{
+    "folders": [
+        {
+            "path": "../example",
+            "name": "Example App"
+        },
+        {
+            "path": "../",
+            "name": "Library Core"
+        }
+    ],
+    "settings": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll.eslint": true,
+            "source.fixAll.format": true,
+            "source.organizeImports": true
+        },
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "cSpell.words": [
+            "prettierrc",
+            "typedoc"
+        ],
+        "liveServer.settings.multiRootWorkspaceName": "Library Core"
+    },
+}
