@@ -1,8 +1,2 @@
-interface Test {
-  name: string;
-}
-export const sayHi = () => console.log("Hi");
-
-export const sayNotHi = () => {
-  console.log("Not Hi");
-};
+import SearchableDropdown from "./searchable-dropdown";
+export { SearchableDropdown as SearchableDropdown };
