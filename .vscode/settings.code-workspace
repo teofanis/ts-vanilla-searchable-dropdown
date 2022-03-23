@@ -22,6 +22,6 @@
             "prettierrc",
             "typedoc"
         ],
-        "liveServer.settings.multiRootWorkspaceName": "Library Core"
+        "liveServer.settings.multiRootWorkspaceName": "Example App"
     },
 }

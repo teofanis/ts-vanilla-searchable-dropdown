@@ -1,22 +1,18 @@
-import resolve from "@rollup/plugin-node-resolve";
-import commonjs from "@rollup/plugin-commonjs";
-import typescript from "@rollup/plugin-typescript";
-import pkg from "../package.json";
+import commonjs from '@rollup/plugin-commonjs';
+import resolve from '@rollup/plugin-node-resolve';
+import typescript from '@rollup/plugin-typescript';
+import pkg from '../package.json';
 
 export default [
   // browser-friendly UMD build
   {
-    input: "src/index.ts",
+    input: 'src/index.ts',
     output: {
-      name: "searchable-dropdown",
+      name: 'searchable-dropdown',
       file: pkg.browser,
-      format: "umd",
+      format: 'umd',
     },
-    plugins: [
-      resolve(),
-      commonjs(),
-      typescript({ tsconfig: "./config/tsconfig.json" }),
-    ],
+    plugins: [resolve(), commonjs(), typescript({ tsconfig: './config/tsconfig.json' })],
   },
 
   // CommonJS (for Node) and ES module (for bundlers) build.
@@ -26,11 +22,12 @@ export default [
   // an array for the `output` option, where we can specify
   // `file` and `format` for each target)
   {
-    input: "src/index.ts",
+    input: 'src/index.ts',
     output: [
-      { file: pkg.main, format: "cjs" },
-      { file: pkg.module, format: "es" },
+      { file: pkg.main, format: 'cjs' },
+      { file: pkg.module, format: 'es' },
     ],
-    plugins: [typescript({ tsconfig: "./config/tsconfig.json" })],
+    plugins: [typescript({ tsconfig: './config/tsconfig.json' })],
+    external: ['lodash'],
   },
 ];
