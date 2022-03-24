@@ -1,13 +1,22 @@
-import { DEFAULT_CONFIG } from './constants';
-import { ListOption, MountableElement, SearchableDropdownConfig, SearchableDropdownI } from './interfaces';
-import { data_get } from './utils';
+import { DEFAULT_CONFIG } from "./constants";
+import {
+  ListOption,
+  MountableElement,
+  SearchableDropdownConfig,
+  SearchableDropdownI,
+} from "./interfaces";
+import { data_get } from "./utils";
 
 export default class SearchableDropdown implements SearchableDropdownI {
   private _config: SearchableDropdownConfig;
   private _element: HTMLInputElement;
   private _options: ListOption[];
-  constructor(element: MountableElement, config: Partial<SearchableDropdownConfig> = {}, options: ListOption[] = []) {
-    console.log('SearchableDropdown constructor');
+  constructor(
+    element: MountableElement,
+    config: Partial<SearchableDropdownConfig> = {},
+    options: ListOption[] = []
+  ) {
+    console.log("SearchableDropdown constructor");
     this.element = element;
     this.config = config;
     this.options = options;
@@ -20,19 +29,23 @@ export default class SearchableDropdown implements SearchableDropdownI {
   }
 
   init(): void {
-    console.log('Initializing SearchableDropdown');
+    console.log("Initializing SearchableDropdown");
     this._addEventListeners();
     this._render();
   }
 
+  destroy(): void {
+    console.log("Destroying");
+    this._removeEventListeners();
+  }
   // Config getter
   public get config(): SearchableDropdownConfig {
-    console.log('Getting config');
+    console.log("Getting config");
     return this._config;
   }
   // Config setter
   public set config(_config: Partial<SearchableDropdownConfig>) {
-    console.log('Setting config');
+    console.log("Setting config");
     this._config = {
       ...DEFAULT_CONFIG,
       ...this._config,
@@ -42,13 +55,13 @@ export default class SearchableDropdown implements SearchableDropdownI {
 
   // Options getter
   public get options(): ListOption[] {
-    console.log('Retrieving Options');
+    console.log("Retrieving Options");
     return this._options;
   }
 
   // Options setter
   public set options(_options: ListOption[]) {
-    console.log('Setting Options');
+    console.log("Setting Options");
     this._options = _options;
   }
 
@@ -66,7 +79,7 @@ export default class SearchableDropdown implements SearchableDropdownI {
       }
       const inputEl = nodes[0];
       if (!(inputEl instanceof HTMLInputElement)) {
-        throw new Error('Element must be an input element');
+        throw new Error("Element must be an input element");
       }
       _element = inputEl;
     }
@@ -75,16 +88,26 @@ export default class SearchableDropdown implements SearchableDropdownI {
 
   // Internal functions
   _render(): void {
-    console.log('Rendering Called');
-    this.element.placeholder = data_get(this.config, 'placeholder', DEFAULT_CONFIG.placeholder);
+    console.log("Rendering Called");
+    this.element.placeholder = data_get(
+      this.config,
+      "placeholder",
+      DEFAULT_CONFIG.placeholder
+    );
   }
 
   _addEventListeners(): void {
-    console.log('Adding Event Listeners');
-    this.element.addEventListener('click', this._onClick);
+    console.log("Adding Event Listeners");
+    this.element.addEventListener("click", this._onClick);
+  }
+
+  _removeEventListeners(): void {
+    console.log("Removing Event Listeners");
+    this.element.removeEventListener("click", this._onClick);
   }
 
   _onClick(e: MouseEvent): void {
-    console.log('Clicked', this, e);
+    console.log("Clicked", this, e);
+    this.element.classList.toggle("hidden");
   }
 }
