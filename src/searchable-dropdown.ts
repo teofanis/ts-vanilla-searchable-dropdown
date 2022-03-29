@@ -1,3 +1,4 @@
+import { container, dropdown } from "./components";
 import { DEFAULT_CONFIG } from "./constants";
 import {
   ListOption,
@@ -5,12 +6,14 @@ import {
   SearchableDropdownConfig,
   SearchableDropdownI,
 } from "./interfaces";
-import { data_get } from "./utils";
+import { InstanceID } from "./interfaces/common";
+import { data_get, generateUniqueID, wrap } from "./utils";
 
 export default class SearchableDropdown implements SearchableDropdownI {
   private _config: SearchableDropdownConfig;
   private _element: HTMLInputElement;
   private _options: ListOption[];
+  private _instanceID: InstanceID;
   constructor(
     element: MountableElement,
     config: Partial<SearchableDropdownConfig> = {},
@@ -20,9 +23,11 @@ export default class SearchableDropdown implements SearchableDropdownI {
     this.element = element;
     this.config = config;
     this.options = options;
+    this._instanceID = generateUniqueID();
     //`this` Bindings to the current instance
     this._render = this._render.bind(this);
     this._onClick = this._onClick.bind(this);
+    this._onFocus = this._onFocus.bind(this);
 
     //Initialize
     this.init();
@@ -30,8 +35,8 @@ export default class SearchableDropdown implements SearchableDropdownI {
 
   init(): void {
     console.log("Initializing SearchableDropdown");
-    this._addEventListeners();
     this._render();
+    this._addEventListeners();
   }
 
   destroy(): void {
@@ -86,6 +91,10 @@ export default class SearchableDropdown implements SearchableDropdownI {
     this._element = _element;
   }
 
+  public get instanceID(): InstanceID {
+    return this._instanceID;
+  }
+
   // Internal functions
   _render(): void {
     console.log("Rendering Called");
@@ -94,20 +103,37 @@ export default class SearchableDropdown implements SearchableDropdownI {
       "placeholder",
       DEFAULT_CONFIG.placeholder
     );
+
+    const wrapper = container(this);
+    wrapper.addEventListener("focus", this._onFocus, true);
+    wrap(this.element, wrapper);
+    const dropdownList = dropdown(this.options, this);
+    wrap(dropdownList, wrapper);
+    console.log(dropdownList);
   }
 
   _addEventListeners(): void {
     console.log("Adding Event Listeners");
-    this.element.addEventListener("click", this._onClick);
+    // this.element.addEventListener("click", this._onClick);
+    this.element.parentElement?.addEventListener("focus", this._onFocus);
+
+    this.element.nextSibling.childNodes.forEach((child) => {
+      child.addEventListener("click", this._onClick);
+    });
   }
 
   _removeEventListeners(): void {
     console.log("Removing Event Listeners");
-    this.element.removeEventListener("click", this._onClick);
+    // this.element.removeEventListener("click", this._onClick);
+    this.element.parentElement?.removeEventListener("focus", this._onFocus);
   }
 
-  _onClick(e: MouseEvent): void {
+  _onClick(e: any): void {
     console.log("Clicked", this, e);
-    this.element.classList.toggle("hidden");
+  }
+
+  _onFocus(e: FocusEvent): void {
+    console.log("Focused", this, e);
+    this.element?.nextElementSibling.classList.toggle("hidden");
   }
 }
