@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "searchable-dropdown": ["node_modules/searchable-dropdown/src"],
+      "searchable-dropdown/*": ["node_modules/searchable-dropdown/src/*"]
+    },
+    "target": "es5",
+    "module": "esnext",
+    "noEmit": true,
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "strictPropertyInitialization": false
+  }
+}
