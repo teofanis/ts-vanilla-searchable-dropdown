@@ -1,19 +1,21 @@
+import { resetAll } from './actions';
 import { container, dropdown } from "./components";
 import { DEFAULT_CONFIG } from "./constants";
 import {
   ListOption,
   MountableElement,
   SearchableDropdownConfig,
-  SearchableDropdownI,
+  SearchableDropdownI
 } from "./interfaces";
 import { InstanceID } from "./interfaces/common";
+import { Store } from "./store";
 import { data_get, generateUniqueID, wrap } from "./utils";
-
 export default class SearchableDropdown implements SearchableDropdownI {
   private _config: SearchableDropdownConfig;
   private _element: HTMLInputElement;
   private _options: ListOption[];
   private _instanceID: InstanceID;
+  private _store : Store;
   constructor(
     element: MountableElement,
     config: Partial<SearchableDropdownConfig> = {},
@@ -29,6 +31,8 @@ export default class SearchableDropdown implements SearchableDropdownI {
     this._onClick = this._onClick.bind(this);
     this._onFocus = this._onFocus.bind(this);
 
+    this._store = new Store();
+
     //Initialize
     this.init();
   }
@@ -37,6 +41,7 @@ export default class SearchableDropdown implements SearchableDropdownI {
     console.log("Initializing SearchableDropdown");
     this._render();
     this._addEventListeners();
+    this._store.subscribe(this._render);
   }
 
   destroy(): void {
@@ -117,7 +122,7 @@ export default class SearchableDropdown implements SearchableDropdownI {
     // this.element.addEventListener("click", this._onClick);
     this.element.parentElement?.addEventListener("focus", this._onFocus);
 
-    this.element.nextSibling.childNodes.forEach((child) => {
+    this.element.nextSibling?.childNodes.forEach((child) => {
       child.addEventListener("click", this._onClick);
     });
   }
@@ -130,10 +135,17 @@ export default class SearchableDropdown implements SearchableDropdownI {
 
   _onClick(e: any): void {
     console.log("Clicked", this, e);
+    this.reset();
   }
 
   _onFocus(e: FocusEvent): void {
     console.log("Focused", this, e);
-    this.element?.nextElementSibling.classList.toggle("hidden");
+    this.element?.nextElementSibling?.classList.toggle("hidden");
+  }
+
+  reset() : this {
+    console.log('dispatch reset all');
+    this._store.dispatch(resetAll());
+    return this;
   }
 }

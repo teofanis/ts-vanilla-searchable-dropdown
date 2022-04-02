@@ -1,5 +1,6 @@
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
+import replace from '@rollup/plugin-replace';
 import typescript from '@rollup/plugin-typescript';
 import pkg from '../package.json';
 
@@ -12,7 +13,16 @@ export default [
       file: pkg.browser,
       format: 'umd',
     },
-    plugins: [resolve(), commonjs(), typescript({ tsconfig: './config/tsconfig.json' })],
+    plugins: [
+      resolve(),
+      commonjs(),
+      typescript({ tsconfig: './config/tsconfig.json' }),
+      replace({
+        'process.env.NODE_ENV': JSON.stringify('production'),
+        __buildDate__: () => JSON.stringify(new Date()),
+        preventAssignment: true,
+      }),
+    ],
   },
 
   // CommonJS (for Node) and ES module (for bundlers) build.
@@ -27,7 +37,8 @@ export default [
       { file: pkg.main, format: 'cjs' },
       { file: pkg.module, format: 'es' },
     ],
+    external: ['redux'],
     plugins: [typescript({ tsconfig: './config/tsconfig.json' })],
-    external: ['lodash'],
+    external: ['lodash', 'redux'],
   },
 ];
