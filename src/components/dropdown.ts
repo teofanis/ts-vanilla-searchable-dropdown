@@ -1,13 +1,16 @@
+import { CLASS_NAMES } from "../constants";
 import { ListOption, SearchableDropdownI } from "../interfaces";
+import { createElement } from "../utils";
 import { dropdownItem } from "./dropdown-item";
 
 export function dropdown(
   options: ListOption[],
   instance: SearchableDropdownI
-): HTMLDivElement {
-  const container = document.createElement("div");
-  container.id = instance.instanceID;
-  container.classList.add("searchable-dropdown-list", "hidden"); // use some constant for these
+): HTMLElement {
+  const container = createElement("div", {
+    id: instance.instanceID,
+    class: CLASS_NAMES.SEARCHABLE_DROPDOWN_LIST,
+  });
   options.forEach((option) => {
     container.appendChild(dropdownItem(option, instance));
   });

@@ -1,14 +1,15 @@
 import { ListOption, SearchableDropdownI } from "../interfaces";
-import { data_get } from "../utils";
-import { DEFAULT_CONFIG } from "./../constants/defaults";
+import { createElement, data_get } from "../utils";
+import { CLASS_NAMES, DEFAULT_CONFIG } from "./../constants/defaults";
 
 export function dropdownItem(
   option: ListOption,
   instance: SearchableDropdownI
 ) {
-  const container = document.createElement("div");
-  container.classList.add("searchable-dropdown-item");
   const instanceID = instance.instanceID;
+  const container = createElement("div", {
+    class: CLASS_NAMES.SEARCHABLE_DROPDOWN_ITEM,
+  });
   const id = `${instanceID}-${option.label}-${option.value}-item`;
   const name = data_get(instance.config, "name", DEFAULT_CONFIG.name);
   const labelElement = label(option.label, id);
@@ -22,11 +23,11 @@ export function label(
   labelText: string,
   forAttribute: string
 ): HTMLLabelElement {
-  const label = document.createElement("label");
-  label.classList.add("select-item");
-  label.textContent = labelText;
-  label.setAttribute("for", forAttribute);
-  return label;
+ return createElement("label", {
+    for: forAttribute,
+    text: labelText,
+    class: CLASS_NAMES.SEARCHABLE_DROPDOWN_ITEM_LABEL,
+  }) as HTMLLabelElement;
 }
 
 export function input(
@@ -34,11 +35,11 @@ export function input(
   id: string,
   name: string
 ): HTMLInputElement {
-  const input = document.createElement("input");
-  input.type = "radio";
-  input.id = id;
-  input.name = name;
-  input.value = value;
-  input.classList.add("option");
-  return input;
+ return createElement("input", {
+    id,
+    type: "radio",
+    name,
+    value,
+    class: CLASS_NAMES.SEARCHABLE_DROPDOWN_ITEM_INPUT,
+  }) as HTMLInputElement;
 }

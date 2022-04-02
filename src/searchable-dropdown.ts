@@ -1,6 +1,6 @@
 import { resetAll } from './actions';
 import { container, dropdown } from "./components";
-import { DEFAULT_CONFIG } from "./constants";
+import { CLASS_NAMES, DEFAULT_CONFIG } from "./constants";
 import {
   ListOption,
   MountableElement,
@@ -9,7 +9,7 @@ import {
 } from "./interfaces";
 import { InstanceID } from "./interfaces/common";
 import { Store } from "./store";
-import { data_get, generateUniqueID, wrap } from "./utils";
+import { addGlobalEventListener, data_get, generateUniqueID, wrap } from "./utils";
 export default class SearchableDropdown implements SearchableDropdownI {
   private _config: SearchableDropdownConfig;
   private _element: HTMLInputElement;
@@ -123,9 +123,8 @@ export default class SearchableDropdown implements SearchableDropdownI {
     this.element.addEventListener("keyup", this._onChange);
     this.element.parentElement?.addEventListener("focus", this._onFocus);
 
-    this.element.nextSibling?.childNodes.forEach((child) => {
-      child.addEventListener("click", this._onClick);
-    });
+    addGlobalEventListener("click", `.${CLASS_NAMES.SEARCHABLE_DROPDOWN_ITEM_LABEL.join('')}`, this._onClick, document);
+
   }
 
   _removeEventListeners(): void {
@@ -133,6 +132,7 @@ export default class SearchableDropdown implements SearchableDropdownI {
     // this.element.removeEventListener("click", this._onClick);
     this.element.parentElement?.removeEventListener("focus", this._onFocus);
     this.element.removeEventListener("keyup", this._onChange);
+    document.removeEventListener("click", this._onClick);
   }
 
   _onClick(e: any): void {
