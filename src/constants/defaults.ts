@@ -9,6 +9,7 @@ export const DEFAULT_CONFIG: SearchableDropdownConfig = {
 export const ACTIONS_TYPES: Record<ActionType, ActionType> = {
   ADD_OPTION: 'ADD_OPTION',
   RESET_STATE: 'RESET_STATE',
+  FILTER_OPTION: 'FILTER_OPTION',
 }
 
 export const CLASS_NAMES = {

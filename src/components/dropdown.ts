@@ -7,6 +7,10 @@ export function dropdown(
   options: ListOption[],
   instance: SearchableDropdownI
 ): HTMLElement {
+
+  if(instance.listElement) {
+    instance.listElement.remove();
+  }
   const container = createElement("div", {
     id: instance.instanceID,
     class: CLASS_NAMES.SEARCHABLE_DROPDOWN_LIST,

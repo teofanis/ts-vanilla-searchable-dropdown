@@ -1,4 +1,4 @@
-import { resetAll } from './actions';
+import { filterOptions, resetAll } from './actions';
 import { container, dropdown } from "./components";
 import { CLASS_NAMES, DEFAULT_CONFIG } from "./constants";
 import {
@@ -16,6 +16,9 @@ export default class SearchableDropdown implements SearchableDropdownI {
   private _options: ListOption[];
   private _instanceID: InstanceID;
   private _store : Store;
+  private _initialized: boolean = false;
+  private _listElement: HTMLElement;
+
   constructor(
     element: MountableElement,
     config: Partial<SearchableDropdownConfig> = {},
@@ -43,6 +46,7 @@ export default class SearchableDropdown implements SearchableDropdownI {
     this._render();
     this._addEventListeners();
     this._store.subscribe(this._render);
+    this._initialized = true;
   }
 
   destroy(): void {
@@ -97,6 +101,14 @@ export default class SearchableDropdown implements SearchableDropdownI {
     this._element = _element;
   }
 
+  public get listElement() : HTMLElement{
+    return this._listElement;
+  }
+
+  public set listElement(listElement: HTMLElement) {
+    this._listElement = listElement;
+  }
+
   public get instanceID(): InstanceID {
     return this._instanceID;
   }
@@ -104,18 +116,22 @@ export default class SearchableDropdown implements SearchableDropdownI {
   // Internal functions
   _render(): void {
     console.log("Rendering Called");
-    this.element.placeholder = data_get(
-      this.config,
-      "placeholder",
-      DEFAULT_CONFIG.placeholder
-    );
-
-    const wrapper = container(this);
-    wrapper.addEventListener("focus", this._onFocus, true);
-    wrap(this.element, wrapper);
-    const dropdownList = dropdown(this.options, this);
-    wrap(dropdownList, wrapper);
-    console.log(dropdownList);
+    if(!this._initialized) {
+      this.element.placeholder = data_get(
+        this.config,
+        "placeholder",
+        DEFAULT_CONFIG.placeholder
+      );
+      const wrapper = container(this);
+      wrapper.addEventListener("focus", this._onFocus, true);
+      wrap(this.element, wrapper);
+      const dropdownList = dropdown(this.options, this);
+      this.listElement = dropdownList;
+      wrap(dropdownList, wrapper);
+      console.log(dropdownList);
+    } else {
+      this.listElement = dropdown(this.options, this);
+    }
   }
 
   _addEventListeners(): void {
@@ -146,7 +162,12 @@ export default class SearchableDropdown implements SearchableDropdownI {
   }
 
   _onChange(e: KeyboardEvent): void {
-    console.log("Changed", this, e);
+
+    const target = e.currentTarget as HTMLInputElement;
+    const keyword = target.value;
+    if(keyword && keyword.trim().length > 0) {
+     this._store.dispatch(filterOptions(keyword));
+    }
   }
 
   reset() : this {

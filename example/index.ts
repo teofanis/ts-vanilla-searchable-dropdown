@@ -14,5 +14,17 @@ const searchable_instance = new SearchableDropdown(someInputElement, {}, [
     value: "value2",
     label: "label2",
   },
+  {
+    value: "val1",
+    label: "label heere",
+  },
+  {
+    value: "value2",
+    label: "mitsos",
+  },
+  {
+    value: "value51",
+    label: "sometehing",
+  },
 ]);
 console.log(searchable_instance);
