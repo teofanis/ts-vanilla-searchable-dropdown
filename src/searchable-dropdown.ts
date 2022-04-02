@@ -28,6 +28,7 @@ export default class SearchableDropdown implements SearchableDropdownI {
     this._instanceID = generateUniqueID();
     //`this` Bindings to the current instance
     this._render = this._render.bind(this);
+    this._onChange = this._onChange.bind(this);
     this._onClick = this._onClick.bind(this);
     this._onFocus = this._onFocus.bind(this);
 
@@ -119,7 +120,7 @@ export default class SearchableDropdown implements SearchableDropdownI {
 
   _addEventListeners(): void {
     console.log("Adding Event Listeners");
-    // this.element.addEventListener("click", this._onClick);
+    this.element.addEventListener("keyup", this._onChange);
     this.element.parentElement?.addEventListener("focus", this._onFocus);
 
     this.element.nextSibling?.childNodes.forEach((child) => {
@@ -131,6 +132,7 @@ export default class SearchableDropdown implements SearchableDropdownI {
     console.log("Removing Event Listeners");
     // this.element.removeEventListener("click", this._onClick);
     this.element.parentElement?.removeEventListener("focus", this._onFocus);
+    this.element.removeEventListener("keyup", this._onChange);
   }
 
   _onClick(e: any): void {
@@ -141,6 +143,10 @@ export default class SearchableDropdown implements SearchableDropdownI {
   _onFocus(e: FocusEvent): void {
     console.log("Focused", this, e);
     this.element?.nextElementSibling?.classList.toggle("hidden");
+  }
+
+  _onChange(e: KeyboardEvent): void {
+    console.log("Changed", this, e);
   }
 
   reset() : this {

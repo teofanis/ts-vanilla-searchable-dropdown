@@ -44,7 +44,7 @@
 .searchable-dropdown .searchable-dropdown-list {
     position: absolute;
     width: 100%;
-    top: 7rem;
+    margin-top: 0.3rem;
     box-sizing: border-box;
     border: 2px solid #d3d9f0;
     border-radius: .3rem;
