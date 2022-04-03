@@ -19,7 +19,11 @@ export function button(instance: SearchableDropdownI): HTMLElement {
 }
 
 export function arrow(instance: SearchableDropdownI): HTMLElement {
+  let classes = CLASS_NAMES.SEARCHABLE_DROPDOWN_BUTTON_ARROW;
+  if (instance.isOpen) {
+    classes.push("open");
+  }
   return createElement("span", {
-    class: CLASS_NAMES.SEARCHABLE_DROPDOWN_BUTTON_ARROW,
+    class: classes,
   });
 }

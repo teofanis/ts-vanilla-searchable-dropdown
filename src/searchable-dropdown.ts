@@ -14,6 +14,7 @@ import {
   addGlobalEventListener,
   data_get,
   generateUniqueID,
+  qs,
   wrap,
 } from "./utils";
 export default class SearchableDropdown implements SearchableDropdownI {
@@ -85,11 +86,18 @@ export default class SearchableDropdown implements SearchableDropdownI {
 
   public set isOpen(isOpen: boolean) {
     this._isOpen = isOpen;
+    const arrow = qs(".arrow", this.button);
     if (isOpen) {
+      if (arrow) {
+        arrow.classList.add("open");
+      }
       this.listElement.classList.remove("hidden");
       this.element.style.zIndex = "1";
       this.element.focus();
     } else {
+      if (arrow) {
+        arrow.classList.remove("open");
+      }
       this.listElement.classList.add("hidden");
       this.element.style.zIndex = "0";
     }

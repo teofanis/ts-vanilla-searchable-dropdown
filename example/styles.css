@@ -53,6 +53,10 @@
     z-index: 2;
 }
 
+.arrow.open {
+    transform: rotate(225deg);
+}
+
 .searchable-dropdown .searchable-dropdown-list {
     position: absolute;
     width: 100%;
