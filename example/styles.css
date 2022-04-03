@@ -13,13 +13,13 @@
     padding: 1rem;
 }
 
-.searchable-dropdown input:focus,
 .searchable-dropdown button:focus {
     border: 2px solid #2659ff;
 }
 
 .searchable-dropdown.select-group {
     position: relative;
+    isolation: isolate;
 }
 
 .searchable-dropdown .sb-button {
@@ -34,11 +34,23 @@
     position: relative;
 }
 
+.searchable-dropdown input {
+    display: flex;
+    flex-grow: 1;
+    outline: none;
+    border: none;
+    padding: 1rem;
+    position: absolute;
+    margin: 2px;
+    width: 99%;
+}
+
 .sb-button .arrow {
     border: solid black;
     border-width: 0 2px 2px 0;
     padding: 4px;
     transform: rotate(45deg);
+    z-index: 2;
 }
 
 .searchable-dropdown .searchable-dropdown-list {

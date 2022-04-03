@@ -13,7 +13,6 @@ export function button(instance: SearchableDropdownI): HTMLElement {
   });
 
   const arrowEl = arrow(instance);
-
   button.appendChild(span);
   button.appendChild(arrowEl);
   return button;

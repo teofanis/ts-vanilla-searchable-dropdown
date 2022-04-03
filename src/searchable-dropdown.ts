@@ -53,6 +53,7 @@ export default class SearchableDropdown implements SearchableDropdownI {
 
   init(): void {
     console.log("Initializing SearchableDropdown");
+    this.element.type = "search";
     this._render();
     this._addEventListeners();
     this._store.subscribe(this._render);
@@ -86,8 +87,11 @@ export default class SearchableDropdown implements SearchableDropdownI {
     this._isOpen = isOpen;
     if (isOpen) {
       this.listElement.classList.remove("hidden");
+      this.element.style.zIndex = "1";
+      this.element.focus();
     } else {
       this.listElement.classList.add("hidden");
+      this.element.style.zIndex = "0";
     }
   }
 
@@ -194,7 +198,7 @@ export default class SearchableDropdown implements SearchableDropdownI {
 
   _addEventListeners(): void {
     console.log("Adding Event Listeners");
-    this.element.addEventListener("keyup", this._onChange);
+    this.element.addEventListener("input", this._onChange);
     this.container.addEventListener("focus", this._onFocus, { capture: true });
     this.container.addEventListener("focusout", this._onFocusOut);
     addGlobalEventListener(
@@ -209,7 +213,7 @@ export default class SearchableDropdown implements SearchableDropdownI {
     console.log("Removing Event Listeners");
     this.container.removeEventListener("focus", this._onFocus);
     this.container.removeEventListener("focusout", this._onFocusOut);
-    this.element.removeEventListener("keyup", this._onChange);
+    this.element.removeEventListener("input", this._onChange);
     document.removeEventListener("click", this._onClick);
   }
 
@@ -236,7 +240,7 @@ export default class SearchableDropdown implements SearchableDropdownI {
     }
   }
 
-  _onChange(e: KeyboardEvent): void {
+  _onChange(e: any): void {
     const target = e.currentTarget as HTMLInputElement;
     const keyword = target.value;
     this._isSearching = Boolean(keyword.trim().length);
