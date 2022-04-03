@@ -5,26 +5,20 @@ someInputElement.type = "text";
 someInputElement.className = "searchable-dropdown-js";
 container.appendChild(someInputElement);
 
-const searchable_instance = new SearchableDropdown(someInputElement, {}, [
-  {
-    value: "value1",
-    label: "label1",
-  },
-  {
-    value: "value2",
-    label: "label2",
-  },
-  {
-    value: "val1",
-    label: "label heere",
-  },
-  {
-    value: "value2",
-    label: "mitsos",
-  },
-  {
-    value: "value51",
-    label: "sometehing",
-  },
-]);
-console.log(searchable_instance);
+fetch("https://pokeapi.co/api/v2/pokemon?limit=1126")
+  .then((res) => res.json())
+  .then((data) => {
+    //@ts-ignore
+    const options = data.results.map((item) => {
+      return {
+        value: item.name,
+        label: item.name,
+      };
+    });
+    const searchable_instance = new SearchableDropdown(
+      someInputElement,
+      {},
+      options
+    );
+    console.log(searchable_instance);
+  });

@@ -9,6 +9,8 @@ export function dropdownItem(
   const instanceID = instance.instanceID;
   const container = createElement("div", {
     class: CLASS_NAMES.SEARCHABLE_DROPDOWN_ITEM,
+    dataset: option,
+    tabindex: 0,
   });
   const id = `${instanceID}-${option.label}-${option.value}-item`;
   const name = data_get(instance.config, "name", DEFAULT_CONFIG.name);
@@ -23,7 +25,7 @@ export function label(
   labelText: string,
   forAttribute: string
 ): HTMLLabelElement {
- return createElement("label", {
+  return createElement("label", {
     for: forAttribute,
     text: labelText,
     class: CLASS_NAMES.SEARCHABLE_DROPDOWN_ITEM_LABEL,
@@ -35,7 +37,7 @@ export function input(
   id: string,
   name: string
 ): HTMLInputElement {
- return createElement("input", {
+  return createElement("input", {
     id,
     type: "radio",
     name,

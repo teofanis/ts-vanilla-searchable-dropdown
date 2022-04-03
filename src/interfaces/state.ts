@@ -1,5 +1,6 @@
 import { ListOption } from "./ListOption";
 
 export interface State {
-    options: ListOption[];
+  options: ListOption[];
+  selected: ListOption | null;
 }

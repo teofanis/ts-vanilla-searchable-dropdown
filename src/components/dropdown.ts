@@ -7,20 +7,18 @@ export function dropdown(
   options: ListOption[],
   instance: SearchableDropdownI
 ): HTMLElement {
-
-  if(instance.listElement) {
-    instance.listElement.remove();
-  }
   const container = createElement("div", {
     id: instance.instanceID,
-    class: CLASS_NAMES.SEARCHABLE_DROPDOWN_LIST,
+    class: CLASS_NAMES.SEARCHABLE_DROPDOWN_LIST.filter(
+      (className) => !(className === "hidden" && instance.isOpen)
+    ),
   });
 
   options.forEach((option) => {
     container.appendChild(dropdownItem(option, instance));
   });
 
-  if(options.length === 0 && instance.isSearching) {
+  if (options.length === 0 && instance.isSearching) {
     const noResults = createElement("div", {
       class: CLASS_NAMES.SEARCHABLE_DROPDOWN_NO_RESULTS,
       text: "No results found",

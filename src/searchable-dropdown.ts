@@ -1,26 +1,34 @@
-import { addOptions, filterOptions, resetAll } from './actions';
-import { container, dropdown } from "./components";
+import { addOptions, filterOptions, resetAll } from "./actions";
+import { selectOption } from "./actions/options";
+import { button, container, dropdown } from "./components";
 import { CLASS_NAMES, DEFAULT_CONFIG } from "./constants";
 import {
-  ListOption,
   MountableElement,
   SearchableDropdownConfig,
-  SearchableDropdownI
+  SearchableDropdownI,
 } from "./interfaces";
 import { InstanceID } from "./interfaces/common";
+import { ListOption } from "./interfaces/ListOption";
 import { Store } from "./store";
-import { addGlobalEventListener, data_get, generateUniqueID, wrap } from "./utils";
+import {
+  addGlobalEventListener,
+  data_get,
+  generateUniqueID,
+  wrap,
+} from "./utils";
 export default class SearchableDropdown implements SearchableDropdownI {
   private _config: SearchableDropdownConfig;
   private _element: HTMLInputElement;
   private _options: ListOption[];
   private _instanceID: InstanceID;
-  private _store : Store;
+  private _store: Store;
   private _initialized: boolean = false;
   private _listElement: HTMLElement;
   private _containerElement: HTMLElement;
-  private _isOpen =false;
+  private _buttonElement: HTMLElement;
+  private _isOpen = false;
   private _isSearching = false;
+  private _selectedOption: ListOption | null = null;
   constructor(
     element: MountableElement,
     config: Partial<SearchableDropdownConfig> = {},
@@ -37,6 +45,7 @@ export default class SearchableDropdown implements SearchableDropdownI {
     this._onChange = this._onChange.bind(this);
     this._onClick = this._onClick.bind(this);
     this._onFocus = this._onFocus.bind(this);
+    this._onFocusOut = this._onFocusOut.bind(this);
 
     //Initialize
     this.init();
@@ -69,11 +78,20 @@ export default class SearchableDropdown implements SearchableDropdownI {
     };
   }
 
-  public get isOpen() : boolean {
+  public get isOpen(): boolean {
     return this._isOpen;
   }
 
-  public get isSearching() : boolean {
+  public set isOpen(isOpen: boolean) {
+    this._isOpen = isOpen;
+    if (isOpen) {
+      this.listElement.classList.remove("hidden");
+    } else {
+      this.listElement.classList.add("hidden");
+    }
+  }
+
+  public get isSearching(): boolean {
     return this._isSearching;
   }
   // Options getter
@@ -87,6 +105,15 @@ export default class SearchableDropdown implements SearchableDropdownI {
     console.log("Setting Options");
     this._store.dispatch(addOptions(_options));
     this._options = _options;
+  }
+
+  public get selectedOption(): ListOption | null {
+    return this._store.selected;
+  }
+
+  public set selectedOption(selectedOption: ListOption | null) {
+    this._selectedOption = selectedOption;
+    this._store.dispatch(selectOption(selectedOption));
   }
 
   // Element getter
@@ -110,15 +137,25 @@ export default class SearchableDropdown implements SearchableDropdownI {
     this._element = _element;
   }
 
-  public get listElement() : HTMLElement{
+  public get listElement(): HTMLElement {
     return this._listElement;
   }
 
   public set listElement(listElement: HTMLElement) {
+    this._listElement?.remove();
     this._listElement = listElement;
-   }
+  }
 
-  public get container() : HTMLElement {
+  public get button(): HTMLElement {
+    return this._buttonElement;
+  }
+
+  public set button(button: HTMLElement) {
+    this._buttonElement?.remove();
+    this._buttonElement = button;
+  }
+
+  public get container(): HTMLElement {
     return this._containerElement;
   }
 
@@ -131,55 +168,72 @@ export default class SearchableDropdown implements SearchableDropdownI {
     return this._instanceID;
   }
 
+  public get placeholder(): string {
+    return data_get(this.config, "placeholder", DEFAULT_CONFIG.placeholder);
+  }
+
+  public get label(): string {
+    return data_get(this.config, "label", DEFAULT_CONFIG.label);
+  }
+
   // Internal functions
   _render(): void {
     console.log("Rendering Called");
-    if(!this._initialized) {
-      this.element.placeholder = data_get(
-        this.config,
-        "placeholder",
-        DEFAULT_CONFIG.placeholder
-      );
+    if (!this._initialized) {
+      this.element.placeholder = this.placeholder;
       this.container = container(this);
     }
+
+    this.button = button(this);
     this.listElement = dropdown(this.options, this);
-    if(this.isOpen) {
-      this.listElement.classList.remove("hidden");
-    }
+
+    wrap(this.button, this.container);
     wrap(this.listElement, this.container);
-    console.log(this.options)
+    console.log(this.selectedOption);
   }
 
   _addEventListeners(): void {
     console.log("Adding Event Listeners");
     this.element.addEventListener("keyup", this._onChange);
-    this.element.addEventListener("focus", this._onFocus);
-    addGlobalEventListener("click", `.${CLASS_NAMES.SEARCHABLE_DROPDOWN_ITEM_LABEL.join('')}`, this._onClick, document);
-
+    this.container.addEventListener("focus", this._onFocus, { capture: true });
+    this.container.addEventListener("focusout", this._onFocusOut);
+    addGlobalEventListener(
+      "click",
+      `.${CLASS_NAMES.SEARCHABLE_DROPDOWN_ITEM.join("")}`,
+      this._onClick,
+      document
+    );
   }
 
   _removeEventListeners(): void {
     console.log("Removing Event Listeners");
-    // this.element.removeEventListener("click", this._onClick);
-    this.element.removeEventListener("focus", this._onFocus);
+    this.container.removeEventListener("focus", this._onFocus);
+    this.container.removeEventListener("focusout", this._onFocusOut);
     this.element.removeEventListener("keyup", this._onChange);
     document.removeEventListener("click", this._onClick);
   }
 
   _onClick(e: any): void {
-    console.log("Clicked", this, e);
-    this.reset();
+    const option = { ...e.target.dataset } as ListOption;
+    this.isOpen = false;
+    this.selectedOption = option;
   }
 
   _onFocus(e: any): void {
-    console.log("Focused", this, e);
-    this._isOpen = true;
-    if(this._isOpen) {
-      this.listElement.classList.remove("hidden");
-    } else {
-      this.listElement.classList.add("hidden");
+    //Fix this manual trigger..
+    if (e.target.classList.contains(CLASS_NAMES.SEARCHABLE_DROPDOWN_ITEM)) {
+      e.target.click();
+      return;
     }
-    // this.listElement.classList.toggle("hidden");
+    this.isOpen = true;
+  }
+
+  _onFocusOut(e: any): void {
+    // console.log("Focus Out", this, e);
+    // If the focused element is within the focused one, we want to keep the dropdown open
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      this.isOpen = false;
+    }
   }
 
   _onChange(e: KeyboardEvent): void {
@@ -189,8 +243,8 @@ export default class SearchableDropdown implements SearchableDropdownI {
     this._store.dispatch(filterOptions(keyword.trim(), this._options));
   }
 
-  reset() : this {
-    console.log('dispatch reset all');
+  reset(): this {
+    console.log("dispatch reset all");
     this._store.dispatch(resetAll());
     return this;
   }

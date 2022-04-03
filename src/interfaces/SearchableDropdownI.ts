@@ -5,6 +5,9 @@ import { SearchableDropdownConfig } from "./SearchableDropdownConfig";
 export interface SearchableDropdownI {
   isSearching: boolean;
   isOpen: boolean;
+  label: string;
+  placeholder: string;
+  selectedOption: ListOption | null;
   container: HTMLElement;
   listElement: HTMLElement;
   element: HTMLInputElement;
