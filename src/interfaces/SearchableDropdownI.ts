@@ -6,6 +6,7 @@ export interface SearchableDropdownI {
   isSearching: boolean;
   isOpen: boolean;
   label: string;
+  listHeight: string;
   placeholder: string;
   selectedOption: ListOption | null;
   container: HTMLElement;

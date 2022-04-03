@@ -61,6 +61,7 @@
     border: 2px solid #d3d9f0;
     border-radius: .3rem;
     overflow: hidden;
+    overflow-y: scroll;
 }
 
 .searchable-dropdown-list .option {

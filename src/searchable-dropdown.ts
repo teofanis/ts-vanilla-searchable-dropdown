@@ -176,6 +176,10 @@ export default class SearchableDropdown implements SearchableDropdownI {
     return data_get(this.config, "placeholder", DEFAULT_CONFIG.placeholder);
   }
 
+  public get listHeight(): string {
+    return data_get(this.config, "listHeight", DEFAULT_CONFIG.listHeight);
+  }
+
   public get label(): string {
     return data_get(this.config, "label", DEFAULT_CONFIG.label);
   }
@@ -187,13 +191,11 @@ export default class SearchableDropdown implements SearchableDropdownI {
       this.element.placeholder = this.placeholder;
       this.container = container(this);
     }
-
     this.button = button(this);
-    this.listElement = dropdown(this.options, this);
 
+    this.listElement = dropdown(this.options, this);
     wrap(this.button, this.container);
     wrap(this.listElement, this.container);
-    console.log(this.selectedOption);
   }
 
   _addEventListeners(): void {

@@ -8,10 +8,11 @@ export function dropdown(
   instance: SearchableDropdownI
 ): HTMLElement {
   const container = createElement("div", {
-    id: instance.instanceID,
+    id: `${instance.instanceID}-dropdown-list`,
     class: CLASS_NAMES.SEARCHABLE_DROPDOWN_LIST.filter(
       (className) => !(className === "hidden" && instance.isOpen)
     ),
+    style: `max-height: ${instance.listHeight}`,
   });
 
   options.forEach((option) => {

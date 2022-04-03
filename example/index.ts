@@ -17,7 +17,9 @@ fetch("https://pokeapi.co/api/v2/pokemon?limit=1126")
     });
     const searchable_instance = new SearchableDropdown(
       someInputElement,
-      {},
+      {
+        label: "Select Pokemon",
+      },
       options
     );
     console.log(searchable_instance);

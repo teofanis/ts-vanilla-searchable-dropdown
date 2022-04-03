@@ -1,9 +1,10 @@
 import { ActionType, SearchableDropdownConfig } from "../interfaces";
 
 export const DEFAULT_CONFIG: SearchableDropdownConfig = {
-  label: "Select an option",
+  label: null,
   placeholder: "Select an option",
   name: "searchable-dropdown-input",
+  listHeight: "250px",
 };
 
 export const ACTIONS_TYPES: Record<ActionType, ActionType> = {
