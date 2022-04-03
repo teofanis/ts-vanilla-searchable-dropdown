@@ -1,4 +1,4 @@
-import { filterOptions, resetAll } from './actions';
+import { addOptions, filterOptions, resetAll } from './actions';
 import { container, dropdown } from "./components";
 import { CLASS_NAMES, DEFAULT_CONFIG } from "./constants";
 import {
@@ -18,13 +18,16 @@ export default class SearchableDropdown implements SearchableDropdownI {
   private _store : Store;
   private _initialized: boolean = false;
   private _listElement: HTMLElement;
-
+  private _containerElement: HTMLElement;
+  private _isOpen =false;
+  private _isSearching = false;
   constructor(
     element: MountableElement,
     config: Partial<SearchableDropdownConfig> = {},
     options: ListOption[] = []
   ) {
     console.log("SearchableDropdown constructor");
+    this._store = new Store();
     this.element = element;
     this.config = config;
     this.options = options;
@@ -34,8 +37,6 @@ export default class SearchableDropdown implements SearchableDropdownI {
     this._onChange = this._onChange.bind(this);
     this._onClick = this._onClick.bind(this);
     this._onFocus = this._onFocus.bind(this);
-
-    this._store = new Store();
 
     //Initialize
     this.init();
@@ -68,15 +69,23 @@ export default class SearchableDropdown implements SearchableDropdownI {
     };
   }
 
+  public get isOpen() : boolean {
+    return this._isOpen;
+  }
+
+  public get isSearching() : boolean {
+    return this._isSearching;
+  }
   // Options getter
   public get options(): ListOption[] {
     console.log("Retrieving Options");
-    return this._options;
+    return this._store.options;
   }
 
   // Options setter
   public set options(_options: ListOption[]) {
     console.log("Setting Options");
+    this._store.dispatch(addOptions(_options));
     this._options = _options;
   }
 
@@ -107,6 +116,15 @@ export default class SearchableDropdown implements SearchableDropdownI {
 
   public set listElement(listElement: HTMLElement) {
     this._listElement = listElement;
+   }
+
+  public get container() : HTMLElement {
+    return this._containerElement;
+  }
+
+  public set container(container: HTMLElement) {
+    wrap(this.element, container);
+    this._containerElement = container;
   }
 
   public get instanceID(): InstanceID {
@@ -122,23 +140,20 @@ export default class SearchableDropdown implements SearchableDropdownI {
         "placeholder",
         DEFAULT_CONFIG.placeholder
       );
-      const wrapper = container(this);
-      wrapper.addEventListener("focus", this._onFocus, true);
-      wrap(this.element, wrapper);
-      const dropdownList = dropdown(this.options, this);
-      this.listElement = dropdownList;
-      wrap(dropdownList, wrapper);
-      console.log(dropdownList);
-    } else {
-      this.listElement = dropdown(this.options, this);
+      this.container = container(this);
     }
+    this.listElement = dropdown(this.options, this);
+    if(this.isOpen) {
+      this.listElement.classList.remove("hidden");
+    }
+    wrap(this.listElement, this.container);
+    console.log(this.options)
   }
 
   _addEventListeners(): void {
     console.log("Adding Event Listeners");
     this.element.addEventListener("keyup", this._onChange);
-    this.element.parentElement?.addEventListener("focus", this._onFocus);
-
+    this.element.addEventListener("focus", this._onFocus);
     addGlobalEventListener("click", `.${CLASS_NAMES.SEARCHABLE_DROPDOWN_ITEM_LABEL.join('')}`, this._onClick, document);
 
   }
@@ -146,7 +161,7 @@ export default class SearchableDropdown implements SearchableDropdownI {
   _removeEventListeners(): void {
     console.log("Removing Event Listeners");
     // this.element.removeEventListener("click", this._onClick);
-    this.element.parentElement?.removeEventListener("focus", this._onFocus);
+    this.element.removeEventListener("focus", this._onFocus);
     this.element.removeEventListener("keyup", this._onChange);
     document.removeEventListener("click", this._onClick);
   }
@@ -156,18 +171,22 @@ export default class SearchableDropdown implements SearchableDropdownI {
     this.reset();
   }
 
-  _onFocus(e: FocusEvent): void {
+  _onFocus(e: any): void {
     console.log("Focused", this, e);
-    this.element?.nextElementSibling?.classList.toggle("hidden");
+    this._isOpen = true;
+    if(this._isOpen) {
+      this.listElement.classList.remove("hidden");
+    } else {
+      this.listElement.classList.add("hidden");
+    }
+    // this.listElement.classList.toggle("hidden");
   }
 
   _onChange(e: KeyboardEvent): void {
-
     const target = e.currentTarget as HTMLInputElement;
     const keyword = target.value;
-    if(keyword && keyword.trim().length > 0) {
-     this._store.dispatch(filterOptions(keyword));
-    }
+    this._isSearching = Boolean(keyword.trim().length);
+    this._store.dispatch(filterOptions(keyword.trim(), this._options));
   }
 
   reset() : this {

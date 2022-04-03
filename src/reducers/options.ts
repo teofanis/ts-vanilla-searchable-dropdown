@@ -1,9 +1,9 @@
-import { AddOptionAction, FilterOptionAction } from "../actions/options";
+import { AddOptionAction, AddOptionsAction, FilterOptionAction } from "../actions/options";
 import { ACTIONS_TYPES } from "../constants";
 import { ListOption } from "../interfaces";
 
 export const defaultState = [];
-type ActionType = AddOptionAction | FilterOptionAction;
+type ActionType = AddOptionAction | AddOptionsAction | FilterOptionAction;
 
 
 export default function options(
@@ -14,9 +14,12 @@ export default function options(
         case ACTIONS_TYPES.ADD_OPTION:
             //@ts-ignore
             return [...state, action.option];
-        case ACTIONS_TYPES.FILTER_OPTION:
+        case ACTIONS_TYPES.ADD_OPTIONS:
             //@ts-ignore
-            return [...state].filter(option => option.label.includes(action.filter));
+            return [...state, ...action.options];
+        case ACTIONS_TYPES.FILTER_OPTION:
+             //@ts-ignore
+            return [...action.options.filter(option => option.label.includes(action.filter))];
         default:
             return state;
     }

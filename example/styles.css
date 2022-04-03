@@ -63,6 +63,14 @@
     color: black;
 }
 
+.searchable-dropdown .searchable-dropdown-no-results {
+    display: block;
+    padding: 1rem;
+    font-weight: 400;
+    background-color: #FFFFFF;
+    color: black;
+}
+
 .searchable-dropdown-list .select-item:hover {
     background-color: #f2f2f2;
 }

@@ -15,8 +15,18 @@ export function dropdown(
     id: instance.instanceID,
     class: CLASS_NAMES.SEARCHABLE_DROPDOWN_LIST,
   });
+
   options.forEach((option) => {
     container.appendChild(dropdownItem(option, instance));
   });
+
+  if(options.length === 0 && instance.isSearching) {
+    const noResults = createElement("div", {
+      class: CLASS_NAMES.SEARCHABLE_DROPDOWN_NO_RESULTS,
+      text: "No results found",
+    });
+    container.appendChild(noResults);
+  }
+
   return container;
 }
