@@ -1,17 +1,12 @@
-import { CLASS_NAMES } from "../constants";
-import { ListOption, SearchableDropdownI } from "../interfaces";
-import { createElement } from "../utils";
-import { dropdownItem } from "./dropdown-item";
+import { CLASS_NAMES } from '../constants';
+import { ListOption, SearchableDropdownI } from '../interfaces';
+import { createElement } from '../utils';
+import { dropdownItem } from './dropdown-item';
 
-export function dropdown(
-  options: ListOption[],
-  instance: SearchableDropdownI
-): HTMLElement {
-  const container = createElement("div", {
+export function dropdown(options: ListOption[], instance: SearchableDropdownI): HTMLElement {
+  const container = createElement('div', {
     id: `${instance.instanceID}-dropdown-list`,
-    class: CLASS_NAMES.SEARCHABLE_DROPDOWN_LIST.filter(
-      (className) => !(className === "hidden" && instance.isOpen)
-    ),
+    class: CLASS_NAMES.SEARCHABLE_DROPDOWN_LIST.filter((className) => !(className === 'hidden' && instance.isOpen)),
     style: `max-height: ${instance.listHeight}`,
   });
 
@@ -20,9 +15,9 @@ export function dropdown(
   });
 
   if (options.length === 0 && instance.isSearching) {
-    const noResults = createElement("div", {
+    const noResults = createElement('div', {
       class: CLASS_NAMES.SEARCHABLE_DROPDOWN_NO_RESULTS,
-      text: "No results found",
+      text: 'No results found',
     });
     container.appendChild(noResults);
   }

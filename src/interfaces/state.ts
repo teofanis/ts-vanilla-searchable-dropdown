@@ -1,4 +1,4 @@
-import { ListOption } from "./ListOption";
+import { ListOption } from './ListOption';
 
 export interface State {
   options: ListOption[];

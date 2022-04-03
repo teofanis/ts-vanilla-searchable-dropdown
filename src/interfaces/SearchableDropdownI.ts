@@ -1,6 +1,6 @@
-import { InstanceID } from "./common";
-import { ListOption } from "./ListOption";
-import { SearchableDropdownConfig } from "./SearchableDropdownConfig";
+import { InstanceID } from './common';
+import { ListOption } from './ListOption';
+import { SearchableDropdownConfig } from './SearchableDropdownConfig';
 
 export interface SearchableDropdownI {
   isSearching: boolean;
@@ -14,5 +14,6 @@ export interface SearchableDropdownI {
   config: Partial<SearchableDropdownConfig>;
   options: ListOption[];
   init(): void;
+  isOptionSelected: (option: ListOption) => boolean;
   instanceID: InstanceID;
 }

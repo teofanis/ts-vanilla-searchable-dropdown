@@ -1,5 +1,5 @@
-import { ACTIONS_TYPES } from "../constants";
-import { ListOption } from "../interfaces";
+import { ACTIONS_TYPES } from '../constants';
+import { ListOption } from '../interfaces';
 
 export interface AddOptionAction {
   type: typeof ACTIONS_TYPES.ADD_OPTION;
@@ -31,18 +31,13 @@ export const addOption = (option: ListOption): AddOptionAction => ({
   option,
 });
 
-export const filterOptions = (
-  filter: string,
-  options: ListOption[]
-): FilterOptionAction => ({
+export const filterOptions = (filter: string, options: ListOption[]): FilterOptionAction => ({
   type: ACTIONS_TYPES.FILTER_OPTION,
   filter,
   options,
 });
 
-export const selectOption = (
-  option: ListOption | null
-): SelectOptionAction => ({
+export const selectOption = (option: ListOption | null): SelectOptionAction => ({
   type: ACTIONS_TYPES.SELECT_OPTION,
   option,
 });
