@@ -180,10 +180,6 @@ export default class SearchableDropdown implements SearchableDropdownI {
     return data_get(this.config, "listHeight", DEFAULT_CONFIG.listHeight);
   }
 
-  public get label(): string {
-    return data_get(this.config, "label", DEFAULT_CONFIG.label);
-  }
-
   // Internal functions
   _render(): void {
     console.log("Rendering Called");
@@ -192,7 +188,6 @@ export default class SearchableDropdown implements SearchableDropdownI {
       this.container = container(this);
     }
     this.button = button(this);
-
     this.listElement = dropdown(this.options, this);
     wrap(this.button, this.container);
     wrap(this.listElement, this.container);
