@@ -20,6 +20,8 @@ export default class SearchableDropdown implements SearchableDropdownI {
   private _isOpen = false;
   private _isSearching = false;
   private _selectedOption: ListOption | null = null;
+  private _clearable = false;
+
   constructor(element: MountableElement, config: Partial<SearchableDropdownConfig> = {}, options: ListOption[] = []) {
     console.log('SearchableDropdown constructor');
     this._store = new Store();
@@ -33,6 +35,7 @@ export default class SearchableDropdown implements SearchableDropdownI {
     this._onClick = this._onClick.bind(this);
     this._onFocus = this._onFocus.bind(this);
     this._onFocusOut = this._onFocusOut.bind(this);
+    this._clearSelect = this._clearSelect.bind(this);
 
     // Initialize
     this.init();
@@ -174,6 +177,10 @@ export default class SearchableDropdown implements SearchableDropdownI {
     return data_get(this.config, 'listHeight', DEFAULT_CONFIG.listHeight);
   }
 
+  public get isClearable(): boolean {
+    return data_get(this.config, 'clearable', DEFAULT_CONFIG.clearable);
+  }
+
   // Internal functions
   _render(): void {
     console.log('Rendering Called');
@@ -193,6 +200,15 @@ export default class SearchableDropdown implements SearchableDropdownI {
     this.container.addEventListener('focus', this._onFocus, { capture: true });
     this.container.addEventListener('focusout', this._onFocusOut);
     addGlobalEventListener('click', `.${CLASS_NAMES.SEARCHABLE_DROPDOWN_ITEM.join('')}`, this._onClick, document);
+
+    if (this.isClearable) {
+      addGlobalEventListener(
+        'click',
+        `.${CLASS_NAMES.SEARCHABLE_DROPDOWN_CLEAR_BUTTON.join('')}`,
+        this._clearSelect,
+        document
+      );
+    }
   }
 
   _removeEventListeners(): void {
@@ -210,8 +226,13 @@ export default class SearchableDropdown implements SearchableDropdownI {
   }
 
   _onFocus(e: any): void {
-    // Fix this manual trigger..
+    // Fix this manual triggers..
     if (e.target.classList.contains(CLASS_NAMES.SEARCHABLE_DROPDOWN_ITEM)) {
+      e.target.click();
+      return;
+    }
+
+    if (e.target.classList.contains(CLASS_NAMES.SEARCHABLE_DROPDOWN_CLEAR_BUTTON)) {
       e.target.click();
       return;
     }
@@ -224,6 +245,11 @@ export default class SearchableDropdown implements SearchableDropdownI {
     if (!e.currentTarget.contains(e.relatedTarget)) {
       this.isOpen = false;
     }
+  }
+
+  _clearSelect(e: any): void {
+    console.log('Clearing');
+    this.selectedOption = null;
   }
 
   _onChange(e: any): void {

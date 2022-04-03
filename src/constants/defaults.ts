@@ -4,6 +4,7 @@ export const DEFAULT_CONFIG: SearchableDropdownConfig = {
   placeholder: 'Select an option',
   name: 'searchable-dropdown-input',
   listHeight: '250px',
+  clearable: false,
 };
 
 export const ACTIONS_TYPES: Record<ActionType, ActionType> = {
@@ -24,4 +25,5 @@ export const CLASS_NAMES = {
   SEARCHABLE_DROPDOWN_BUTTON: ['sb-button'],
   SEARCHABLE_DROPDOWN_BUTTON_LABEL: ['select-label'],
   SEARCHABLE_DROPDOWN_BUTTON_ARROW: ['arrow'],
+  SEARCHABLE_DROPDOWN_CLEAR_BUTTON: ['clear-button'],
 };

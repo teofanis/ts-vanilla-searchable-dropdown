@@ -49,7 +49,7 @@
 .sb-button .arrow {
     border: solid black;
     border-width: 0 2px 2px 0;
-    padding: 4px;
+    padding: 5px;
     transform: rotate(45deg);
     z-index: 2;
 }
@@ -71,6 +71,15 @@
 
 .searchable-dropdown-list .option {
     display: none;
+}
+
+.select-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-grow: 1;
+    margin-left: 0.3rem;
+    margin-right: 0.3rem;
 }
 
 .searchable-dropdown-list .select-item {
