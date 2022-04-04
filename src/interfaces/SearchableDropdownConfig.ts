@@ -4,4 +4,5 @@ export interface SearchableDropdownConfig {
   name: string;
   listHeight?: string;
   clearable?: boolean;
+  highlightMatches?: boolean;
 }

@@ -19,6 +19,7 @@ fetch("https://pokeapi.co/api/v2/pokemon?limit=1126")
       someInputElement,
       {
         clearable: true,
+        highlightMatches: true,
       },
       options
     );

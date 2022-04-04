@@ -1,12 +1,26 @@
-import { addOptions, filterOptions, resetAll } from './actions';
-import { selectOption } from './actions/options';
-import { button as ButtonRender, container as ContainerRender, dropdown } from './components';
-import { CLASS_NAMES, DEFAULT_CONFIG } from './constants';
-import { MountableElement, SearchableDropdownConfig, SearchableDropdownI } from './interfaces';
-import { InstanceID } from './interfaces/common';
-import { ListOption } from './interfaces/ListOption';
-import { Store } from './store';
-import { addGlobalEventListener, data_get, generateUniqueID, qs, wrap } from './utils';
+import { addOptions, filterOptions, resetAll } from "./actions";
+import { selectOption } from "./actions/options";
+import {
+  button as ButtonRender,
+  container as ContainerRender,
+  dropdown,
+} from "./components";
+import { CLASS_NAMES, DEFAULT_CONFIG } from "./constants";
+import {
+  MountableElement,
+  SearchableDropdownConfig,
+  SearchableDropdownI,
+} from "./interfaces";
+import { InstanceID } from "./interfaces/common";
+import { ListOption } from "./interfaces/ListOption";
+import { Store } from "./store";
+import {
+  addGlobalEventListener,
+  data_get,
+  generateUniqueID,
+  qs,
+  wrap,
+} from "./utils";
 export default class SearchableDropdown implements SearchableDropdownI {
   private _config: SearchableDropdownConfig;
   private _element: HTMLInputElement;
@@ -21,9 +35,15 @@ export default class SearchableDropdown implements SearchableDropdownI {
   private _isSearching = false;
   private _selectedOption: ListOption | null = null;
   private _clearable = false;
+  private _highlightMatches = false;
+  private _searchTerm = "";
 
-  constructor(element: MountableElement, config: Partial<SearchableDropdownConfig> = {}, options: ListOption[] = []) {
-    console.log('SearchableDropdown constructor');
+  constructor(
+    element: MountableElement,
+    config: Partial<SearchableDropdownConfig> = {},
+    options: ListOption[] = []
+  ) {
+    console.log("SearchableDropdown constructor");
     this._store = new Store();
     this.element = element;
     this.config = config;
@@ -42,8 +62,8 @@ export default class SearchableDropdown implements SearchableDropdownI {
   }
 
   init(): void {
-    console.log('Initializing SearchableDropdown');
-    this.element.type = 'search';
+    console.log("Initializing SearchableDropdown");
+    this.element.type = "search";
     this._render();
     this._addEventListeners();
     this._store.subscribe(this._render);
@@ -51,17 +71,17 @@ export default class SearchableDropdown implements SearchableDropdownI {
   }
 
   destroy(): void {
-    console.log('Destroying');
+    console.log("Destroying");
     this._removeEventListeners();
   }
   // Config getter
   public get config(): SearchableDropdownConfig {
-    console.log('Getting config');
+    console.log("Getting config");
     return this._config;
   }
   // Config setter
   public set config(_config: Partial<SearchableDropdownConfig>) {
-    console.log('Setting config');
+    console.log("Setting config");
     this._config = {
       ...DEFAULT_CONFIG,
       ...this._config,
@@ -75,35 +95,44 @@ export default class SearchableDropdown implements SearchableDropdownI {
 
   public set isOpen(isOpen: boolean) {
     this._isOpen = isOpen;
-    const arrow = qs('.arrow', this.button);
+    const arrow = qs(".arrow", this.button);
     if (isOpen) {
       if (arrow) {
-        arrow.classList.add('open');
+        arrow.classList.add("open");
       }
-      this.listElement.classList.remove('hidden');
-      this.element.style.zIndex = '1';
+      this.listElement.classList.remove("hidden");
+      this.element.style.zIndex = "1";
       this.element.focus();
     } else {
       if (arrow) {
-        arrow.classList.remove('open');
+        arrow.classList.remove("open");
       }
-      this.listElement.classList.add('hidden');
-      this.element.style.zIndex = '0';
+      this.listElement.classList.add("hidden");
+      this.element.style.zIndex = "0";
     }
   }
 
   public get isSearching(): boolean {
     return this._isSearching;
   }
+
+  public get searchTerm(): string {
+    return this._searchTerm;
+  }
+
+  public set searchTerm(searchTerm: string) {
+    this._searchTerm = searchTerm;
+  }
+
   // Options getter
   public get options(): ListOption[] {
-    console.log('Retrieving Options');
+    console.log("Retrieving Options");
     return this._store.options;
   }
 
   // Options setter
   public set options(_options: ListOption[]) {
-    console.log('Setting Options');
+    console.log("Setting Options");
     this._store.dispatch(addOptions(_options));
     this._options = _options;
   }
@@ -131,7 +160,7 @@ export default class SearchableDropdown implements SearchableDropdownI {
       }
       const inputEl = nodes[0];
       if (!(inputEl instanceof HTMLInputElement)) {
-        throw new Error('Element must be an input element');
+        throw new Error("Element must be an input element");
       }
       _element = inputEl;
     }
@@ -170,20 +199,28 @@ export default class SearchableDropdown implements SearchableDropdownI {
   }
 
   public get placeholder(): string {
-    return data_get(this.config, 'placeholder', DEFAULT_CONFIG.placeholder);
+    return data_get(this.config, "placeholder", DEFAULT_CONFIG.placeholder);
   }
 
   public get listHeight(): string {
-    return data_get(this.config, 'listHeight', DEFAULT_CONFIG.listHeight);
+    return data_get(this.config, "listHeight", DEFAULT_CONFIG.listHeight);
   }
 
   public get isClearable(): boolean {
-    return data_get(this.config, 'clearable', DEFAULT_CONFIG.clearable);
+    return data_get(this.config, "clearable", DEFAULT_CONFIG.clearable);
+  }
+
+  public get highlightMatches(): boolean {
+    return data_get(
+      this.config,
+      "highlightMatches",
+      DEFAULT_CONFIG.highlightMatches
+    );
   }
 
   // Internal functions
   _render(): void {
-    console.log('Rendering Called');
+    console.log("Rendering Called");
     if (!this._initialized) {
       this.element.placeholder = this.placeholder;
       this.container = ContainerRender(this);
@@ -195,16 +232,21 @@ export default class SearchableDropdown implements SearchableDropdownI {
   }
 
   _addEventListeners(): void {
-    console.log('Adding Event Listeners');
-    this.element.addEventListener('input', this._onChange);
-    this.container.addEventListener('focus', this._onFocus, { capture: true });
-    this.container.addEventListener('focusout', this._onFocusOut);
-    addGlobalEventListener('click', `.${CLASS_NAMES.SEARCHABLE_DROPDOWN_ITEM.join('')}`, this._onClick, document);
+    console.log("Adding Event Listeners");
+    this.element.addEventListener("input", this._onChange);
+    this.container.addEventListener("focus", this._onFocus, { capture: true });
+    this.container.addEventListener("focusout", this._onFocusOut);
+    addGlobalEventListener(
+      "click",
+      `.${CLASS_NAMES.SEARCHABLE_DROPDOWN_ITEM.join("")}`,
+      this._onClick,
+      document
+    );
 
     if (this.isClearable) {
       addGlobalEventListener(
-        'click',
-        `.${CLASS_NAMES.SEARCHABLE_DROPDOWN_CLEAR_BUTTON.join('')}`,
+        "click",
+        `.${CLASS_NAMES.SEARCHABLE_DROPDOWN_CLEAR_BUTTON.join("")}`,
         this._clearSelect,
         document
       );
@@ -212,11 +254,11 @@ export default class SearchableDropdown implements SearchableDropdownI {
   }
 
   _removeEventListeners(): void {
-    console.log('Removing Event Listeners');
-    this.container.removeEventListener('focus', this._onFocus);
-    this.container.removeEventListener('focusout', this._onFocusOut);
-    this.element.removeEventListener('input', this._onChange);
-    document.removeEventListener('click', this._onClick);
+    console.log("Removing Event Listeners");
+    this.container.removeEventListener("focus", this._onFocus);
+    this.container.removeEventListener("focusout", this._onFocusOut);
+    this.element.removeEventListener("input", this._onChange);
+    document.removeEventListener("click", this._onClick);
   }
 
   _onClick(e: any): void {
@@ -232,7 +274,9 @@ export default class SearchableDropdown implements SearchableDropdownI {
       return;
     }
 
-    if (e.target.classList.contains(CLASS_NAMES.SEARCHABLE_DROPDOWN_CLEAR_BUTTON)) {
+    if (
+      e.target.classList.contains(CLASS_NAMES.SEARCHABLE_DROPDOWN_CLEAR_BUTTON)
+    ) {
       e.target.click();
       return;
     }
@@ -248,7 +292,7 @@ export default class SearchableDropdown implements SearchableDropdownI {
   }
 
   _clearSelect(e: any): void {
-    console.log('Clearing');
+    console.log("Clearing");
     this.selectedOption = null;
   }
 
@@ -256,15 +300,18 @@ export default class SearchableDropdown implements SearchableDropdownI {
     const target = e.currentTarget as HTMLInputElement;
     const keyword = target.value;
     this._isSearching = Boolean(keyword.trim().length);
+    this.searchTerm = keyword.trim();
     this._store.dispatch(filterOptions(keyword.trim(), this._options));
   }
 
   isOptionSelected(option: ListOption): boolean {
-    return Boolean(this.selectedOption && this.selectedOption.value === option.value);
+    return Boolean(
+      this.selectedOption && this.selectedOption.value === option.value
+    );
   }
 
   reset(): this {
-    console.log('dispatch reset all');
+    console.log("dispatch reset all");
     this._store.dispatch(resetAll());
     return this;
   }

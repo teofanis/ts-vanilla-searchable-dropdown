@@ -1,5 +1,5 @@
-import _ from 'lodash';
-import { InstanceID } from '../interfaces';
+import _ from "lodash";
+import { InstanceID } from "../interfaces";
 
 export function data_get(object: object, path: string, defaultValue: unknown) {
   return _.get(object, path, defaultValue);
@@ -52,32 +52,48 @@ export function addGlobalEventListener(
   );
 }
 
-export function qs(selector: string, element: ParentNode = document): HTMLElement | null {
+export function qs(
+  selector: string,
+  element: ParentNode = document
+): HTMLElement | null {
   return element.querySelector(selector);
 }
 
-export function qsa(selector: string, element: ParentNode = document): Element[] {
+export function qsa(
+  selector: string,
+  element: ParentNode = document
+): Element[] {
   return Array.from(element.querySelectorAll(selector));
 }
 
-export function createElement(tagName: string, attributes: object = {}): HTMLElement {
+export function createElement(
+  tagName: string,
+  attributes: object = {}
+): HTMLElement {
   const element = document.createElement(tagName);
   Object.entries(attributes).forEach(([key, value]) => {
-    if (key === 'class') {
+    if (key === "class") {
       const classNames = Array.isArray(value) ? value : [value];
       element.classList.add(...classNames);
       return;
     }
-    if (key === 'dataset') {
+    if (key === "dataset") {
       Object.entries(value).forEach(([dataKey, dataValue]) => {
         // @ts-ignore
-        element.dataset[dataKey] = is_scalar(dataValue) ? dataValue : JSON.stringify(dataValue);
+        element.dataset[dataKey] = is_scalar(dataValue)
+          ? dataValue
+          : JSON.stringify(dataValue);
       });
       return;
     }
 
-    if (key === 'text') {
+    if (key === "text") {
       element.textContent = value;
+      return;
+    }
+
+    if (key === "html") {
+      element.innerHTML = value;
       return;
     }
     element.setAttribute(key, value);
@@ -89,8 +105,13 @@ export function is_scalar(value: unknown): boolean {
   return (
     value === null ||
     value === undefined ||
-    typeof value === 'string' ||
-    typeof value === 'number' ||
-    typeof value === 'boolean'
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "boolean"
   );
+}
+
+export function highlight(text: string, search: string): string {
+  const regex = new RegExp(search, "gi");
+  return text.replace(regex, (match) => `<mark>${match}</mark>`);
 }
