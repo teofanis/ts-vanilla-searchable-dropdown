@@ -82,6 +82,18 @@
     margin-right: 0.3rem;
 }
 
+.sb-button .clear-button {
+    background: transparent;
+    border: none;
+    color: black;
+    font-weight: 700;
+}
+
+.sb-button .clear-button:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
 .searchable-dropdown-list .select-item {
     display: flex;
     padding: 1rem;
