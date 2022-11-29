@@ -1,1 +1,1 @@
-# npm-searchable
+# ts-vanilla-searchable-dropdown
